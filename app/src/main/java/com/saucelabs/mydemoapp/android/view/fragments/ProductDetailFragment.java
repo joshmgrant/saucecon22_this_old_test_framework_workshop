@@ -1,7 +1,6 @@
 package com.saucelabs.mydemoapp.android.view.fragments;
 
 import android.graphics.PorterDuff;
-import android.net.http.DelegatingSSLSession;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,9 +46,6 @@ public class ProductDetailFragment extends BaseFragment implements View.OnClickL
         args.putInt(Constants.ARG_PARAM3, param3);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public ProductDetailFragment(){
     }
 
     @Override
@@ -194,10 +190,14 @@ public class ProductDetailFragment extends BaseFragment implements View.OnClickL
         }
     }
 
-    public int countItemsInCart(ProductModel productModel, int number){
+    private void addToCart(ProductModel productModel, int number) {
+        // Intentionally introduced bug for demos
+        if (productModel.getTitle().equals("Sauce Lab Bolt T-Shirt")) {
+            number = 10;
+        }
 
         boolean isAvailable = false;
-        if (ST != null && ST.cartItemList != null) {
+        if (ST.cartItemList != null) {
             for (int pos = 0; pos < ST.cartItemList.size(); pos++) {
                 CartItemModel model = ST.cartItemList.get(pos);
                 if (model.getProductModel().getId() == productModel.getId() && selectedColor.getColorImg() == model.getColor()) {
@@ -208,23 +208,8 @@ public class ProductDetailFragment extends BaseFragment implements View.OnClickL
                 }
             }
         }
-        else { // assume no items in cart
-            CartItemModel model = new CartItemModel();
-            model.setNumberOfProduct(number);
-            isAvailable = true;
-        }
 
-        if (!isAvailable){
-            number = -1;
-        }
-        return number;
-    }
-
-    private void addToCart(ProductModel productModel, int number) {
-
-        int itemNumber = countItemsInCart(productModel, number);
-
-        if (itemNumber < 0) {
+        if (!isAvailable) {
             CartItemModel model = new CartItemModel();
             model.setProductModel(productModel);
             model.setColor(selectedColor.getColorImg());
