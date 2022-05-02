@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import okhttp3.Response;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import com.saucelabs.mydemoapp.android.R;
 import com.saucelabs.mydemoapp.android.databinding.FragmentCheckoutBinding;
 import com.saucelabs.mydemoapp.android.utils.Constants;
+import com.saucelabs.mydemoapp.android.utils.Network;
 import com.saucelabs.mydemoapp.android.utils.base.BaseFragment;
 import com.saucelabs.mydemoapp.android.view.activities.MainActivity;
 import com.testfairy.TestFairy;
@@ -22,6 +24,7 @@ import com.testfairy.TestFairy;
 
 public class CheckoutFragment extends BaseFragment implements View.OnClickListener {
 	private FragmentCheckoutBinding binding;
+	private final String CREDIT_CARD_SERVICE = "https://rgu3pw.deta.dev/validate_number/";
 
 	String fullName = "";
 	String address1 = "";
@@ -380,6 +383,16 @@ public class CheckoutFragment extends BaseFragment implements View.OnClickListen
 			binding.cardNumberET.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.grey_text_color));
 			cardNumber = binding.cardNumberET.getText().toString().trim();
 		}
+
+		Response response = Network.fetch(CREDIT_CARD_SERVICE + cardNumber);
+		if (response.code() > 300){
+			binding.cardNumberErrorIV.setVisibility(View.VISIBLE);
+			binding.cardNumberTV.setVisibility(View.VISIBLE);
+			binding.cardNumberRL.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.edit_bg_red));
+			binding.cardNumberET.setHintTextColor(ContextCompat.getColor(getActivity(), R.color.red));
+			cardNumber = "";
+		}
+
 
 		if (binding.expirationDateET.getText().toString().trim().length() == 0) {
 			binding.expirationDateIV.setVisibility(View.VISIBLE);
