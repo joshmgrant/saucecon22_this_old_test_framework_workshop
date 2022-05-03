@@ -151,17 +151,9 @@ public class DashboardToCheckout extends BaseTest {
         // End................................................
 
         // Fragment CheckOut Information
-        String creditCardData = null;
-        try {
-            creditCardData = Network.fetchBody("https://rgu3pw.deta.dev/get_test_card_details").string();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        JsonObject jsonObject = JsonParser.parseString(creditCardData).getAsJsonObject();
-
         String name_Checkout="Rebecca Winter";
-        String card_no = jsonObject.get("number").toString();
-        String date = jsonObject.get("expiry").toString();
+        String card_no = "456789012345";
+        String date = "01/25";
         String securityCode="123";
 
         onView(withId(R.id.nameET))
