@@ -202,12 +202,10 @@ public class LoginFragment extends BaseFragment implements View.OnClickListener 
 
             TestFairy.addEvent("Authentication failed for locked user");
         } else {
-            fetchWiki();
-
             TestFairy.setUserId(binding.nameET.getText().toString().trim());
             TestFairy.addEvent("User signed in with password");
 
-//            ST.isLogin = true;
+          //ST.isLogin = true;
             if (mParam1.equals(ST.CHECKOUT)) {
                 Bundle bundle = ST.getBundle(MainActivity.FRAGMENT_CHECKOUT_INFO, 1);
                 ST.startActivityWithDataBundle(mAct, MainActivity.class, bundle, ST.START_ACTIVITY_WITH_FINISH);

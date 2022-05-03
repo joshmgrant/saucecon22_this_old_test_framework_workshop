@@ -15,10 +15,15 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
 import com.saucelabs.mydemoapp.android.BaseTest;
 import com.saucelabs.mydemoapp.android.HappyFlow;
 import com.saucelabs.mydemoapp.android.R;
 import com.saucelabs.mydemoapp.android.actions.NestingAwareScrollAction;
+import com.saucelabs.mydemoapp.android.utils.Network;
+
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -146,9 +151,17 @@ public class DashboardToCheckout extends BaseTest {
         // End................................................
 
         // Fragment CheckOut Information
+        String creditCardData = null;
+        try {
+            creditCardData = Network.fetchBody("https://rgu3pw.deta.dev/get_test_card_details").string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JsonObject jsonObject = JsonParser.parseString(creditCardData).getAsJsonObject();
+
         String name_Checkout="Rebecca Winter";
-        String card_no="3258125675687891";
-        String date="03/25";
+        String card_no = jsonObject.get("number").toString();
+        String date = jsonObject.get("expiry").toString();
         String securityCode="123";
 
         onView(withId(R.id.nameET))
@@ -164,24 +177,24 @@ public class DashboardToCheckout extends BaseTest {
         onView(withId(R.id.securityCodeET))
                 .perform(scroll)
                 .perform(typeText(securityCode), closeSoftKeyboard());
-
-        onView(withText("Review Order"))
-                .perform(click());
-        // End................................................
-
-        // Place Order Fragment
-        onView(withText("Place Order"))
-                .perform(click());
+        //Place Order Fragment
+//        onView(withText("Place Order"))
+//                .perform(click());
         // End................................................
 
         // CheckOut Complete
-        onView(withText("Continue Shopping"))
-                .perform(scroll)
-                .perform(click());
+//        onView(withText("Continue Shopping"))
+//                .perform(scroll)
+//                .perform(click());
+//        // End................................................
+//
+//        // Assert we are back to main page
+//        onView(withId(R.id.productRV))
+//                .check(matches(isDisplayed()));
+//        onView(withText("Review Order"))
+//                .perform(click());
         // End................................................
 
-        // Assert we are back to main page
-        onView(withId(R.id.productRV))
-                .check(matches(isDisplayed()));
+//
     }
 }

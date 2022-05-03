@@ -63,4 +63,34 @@ public class Network {
 		}
 		return response;
 	}
+
+	public static ResponseBody fetchBody(String url) {
+		Response response;
+		ResponseBody body;
+
+		long startTime = System.currentTimeMillis();
+
+		OkHttpClient client = new OkHttpClient();
+		Request request = new Request.Builder()
+				.url(url)
+				.build();
+
+		try {
+			Buffer requestBuffer = new Buffer();
+			RequestBody requestBody = request.body();
+			if (requestBody != null) {
+				requestBody.writeTo(requestBuffer);
+			}
+			byte[] requestBodyBytes = requestBuffer.readByteArray();
+
+			response = client.newCall(request).execute();
+			body = response.body();
+
+
+		} catch (IOException e){
+			e.printStackTrace();
+			return null;
+		}
+		return body;
+	}
 }
