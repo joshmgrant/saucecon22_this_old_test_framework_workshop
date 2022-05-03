@@ -190,14 +190,10 @@ public class ProductDetailFragment extends BaseFragment implements View.OnClickL
         }
     }
 
-    private void addToCart(ProductModel productModel, int number) {
-        // Intentionally introduced bug for demos
-        if (productModel.getTitle().equals("Sauce Lab Bolt T-Shirt")) {
-            number = 10;
-        }
+    public int countItemsInCart(ProductModel productModel, int number){
 
         boolean isAvailable = false;
-        if (ST.cartItemList != null) {
+        if (ST != null && ST.cartItemList != null) {
             for (int pos = 0; pos < ST.cartItemList.size(); pos++) {
                 CartItemModel model = ST.cartItemList.get(pos);
                 if (model.getProductModel().getId() == productModel.getId() && selectedColor.getColorImg() == model.getColor()) {
@@ -208,8 +204,28 @@ public class ProductDetailFragment extends BaseFragment implements View.OnClickL
                 }
             }
         }
+        else { // assume no items in cart
+            CartItemModel model = new CartItemModel();
+            model.setNumberOfProduct(number);
+            isAvailable = true;
+        }
 
-        if (!isAvailable) {
+        if (!isAvailable){
+            number = -1;
+        }
+        return number;
+    }
+
+    public void addToCart(ProductModel productModel, int number) {
+
+        // Special case from way back when
+        if (productModel.getTitle().equals("Sauce Lab Bolt T-Shirt")) {
+            number = 10;
+        }
+
+        int itemNumber = countItemsInCart(productModel, number);
+
+        if (itemNumber < 0) {
             CartItemModel model = new CartItemModel();
             model.setProductModel(productModel);
             model.setColor(selectedColor.getColorImg());
@@ -221,8 +237,6 @@ public class ProductDetailFragment extends BaseFragment implements View.OnClickL
         if (mAct instanceof MainActivity) {
             ((MainActivity) mAct).setData();
         }
-
-        ST.syncCartToTestFairy(getContext());
     }
 
     private void handleRatting(int ratting) {
