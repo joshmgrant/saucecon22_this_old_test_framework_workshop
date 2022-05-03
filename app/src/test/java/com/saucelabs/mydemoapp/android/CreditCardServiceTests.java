@@ -10,7 +10,7 @@ import com.saucelabs.mydemoapp.android.utils.Network;
 
 import java.io.IOException;
 
-public class RequesterTest {
+public class CreditCardServiceTests {
 
     @Test
     public void invalidCardNumber() {
